@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_toast">
+
+    <ImageView
+        android:id="@+id/widgetToast_icon"
+        android:layout_width="@dimen/size_xxlarge_thumbnail"
+        android:layout_height="@dimen/size_xxlarge_thumbnail"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/distance_medium"
+        android:contentDescription="@string/widgetToast_icon_descriptionText"
+        android:src="@drawable/ic_kiosk" />
+
+    <TextView
+        android:id="@+id/widgetToast_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/widgetToast_icon"
+        android:layout_alignParentLeft="true"
+        android:padding="@dimen/distance_medium"
+        android:textSize="@dimen/text_xlarge"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+
+</RelativeLayout>

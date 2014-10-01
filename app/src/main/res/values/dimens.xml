@@ -1,0 +1,15 @@
+<resources>
+
+    <dimen name="distance_medium">8dp</dimen>
+    <dimen name="distance_small">4dp</dimen>
+    <dimen name="distance_micro">2dp</dimen>
+    <dimen name="size_xxlarge_thumbnail">64dp</dimen>
+    <dimen name="size_xlarge_thumbnail">56dp</dimen>
+    <dimen name="size_large_thumbnail">48dp</dimen>
+    <dimen name="size_medium_thumbnail">40dp</dimen>
+    <dimen name="size_small_thumbnail">32dp</dimen>
+    <dimen name="size_micro_thumbnail">24dp</dimen>
+    <dimen name="text_xlarge">16sp</dimen>
+    <dimen name="text_large">14sp</dimen>
+    <dimen name="text_medium">12sp</dimen>
+</resources>
