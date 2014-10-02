@@ -9,15 +9,16 @@ import com.balazscsernai.kioskmode.widget.Toast;
 
 import java.io.IOException;
 
-import static com.balazscsernai.kioskmode.Constants.COMMAND_HIDE_NAVIGATION_BAR;
-import static com.balazscsernai.kioskmode.Constants.COMMAND_SHOW_NAVIGATION_BAR;
-import static com.balazscsernai.kioskmode.Constants.EXTRA_HIDE_NAVIGATION_BAR;
-import static com.balazscsernai.kioskmode.Constants.NAVIGATION_BAR_HIDDEN_DEF;
+import static com.balazscsernai.kioskmode.Constants.COMMAND_DISABLE_KIOSK_MODE;
+import static com.balazscsernai.kioskmode.Constants.COMMAND_ENABLE_KIOSK_MODE;
+import static com.balazscsernai.kioskmode.Constants.KIOSK_MODE_ENABLED_DEFAULT;
 import static com.balazscsernai.kioskmode.Constants.PROCESS_ID_POST_JELLY_BEAN;
 import static com.balazscsernai.kioskmode.Constants.PROCESS_ID_PRE_JELLY_BEAN;
+import static com.balazscsernai.kioskmode.KioskModeStore.STORE;
+import static com.balazscsernai.kioskmodehelper.Constants.EXTRA_ENABLE_KIOSK_MODE;
 
 /**
- * Service for hiding navigation bar.
+ * Service for kiosk mode.
  * @author Balazs_Csernai
  */
 public class KioskModeService extends Service {
@@ -34,27 +35,44 @@ public class KioskModeService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.hasExtra(EXTRA_HIDE_NAVIGATION_BAR)) {
-            hideNavigationBar(intent.getBooleanExtra(EXTRA_HIDE_NAVIGATION_BAR, NAVIGATION_BAR_HIDDEN_DEF));
+        if (isValidIntent(intent)) {
+            boolean enable = getIntentExtra(intent);
+            if (isKioskModeChanged(enable)) {
+                enableKioskMode(enable);
+            }
         }
         return Service.START_NOT_STICKY;
     }
 
-    private void hideNavigationBar(boolean hide) {
-        hidePreviousToast();
+    private boolean isValidIntent(Intent intent) {
+        return intent != null && intent.hasExtra(EXTRA_ENABLE_KIOSK_MODE);
+    }
+
+    private boolean getIntentExtra(Intent intent) {
+        return intent.getBooleanExtra(EXTRA_ENABLE_KIOSK_MODE, KIOSK_MODE_ENABLED_DEFAULT);
+    }
+
+    private boolean isKioskModeChanged(boolean enable) {
+        return enable != STORE.isKioskModeEnabled(this);
+    }
+
+    private void enableKioskMode(boolean enable) {
         Process process = null;
+
+        hidePreviousToast();
         try {
-            if (hide) {
-                process = Runtime.getRuntime().exec(String.format(COMMAND_HIDE_NAVIGATION_BAR, getProcessNumber()));
+            if (enable) {
+                process = Runtime.getRuntime().exec(String.format(COMMAND_ENABLE_KIOSK_MODE, getProcessNumber()));
             } else {
-                process = Runtime.getRuntime().exec(COMMAND_SHOW_NAVIGATION_BAR);
+                process = Runtime.getRuntime().exec(COMMAND_DISABLE_KIOSK_MODE);
             }
             process.waitFor();
-            showToast(String.format("Navigation bar is %s", hide ? "hidden" : "shown"));
+            STORE.setKioskMode(this, enable);
+            showInfoToast(String.format("Kiosk mode %s", enable ? "enabled" : "disabled"));
         } catch (IOException e) {
-            showToast(String.format("Super user privileges needed to %s navigation bar!", hide ? "hide" : "show"));
+            showErrorToast(String.format("Super user privileges needed to %s kiosk mode!", enable ? "enable" : "disable"));
         } catch (InterruptedException e) {
-            showToast(String.format("%s navigation bar failed!", hide ? "Hiding" : "Showing"));
+            showErrorToast(String.format("%s kiosk mode failed!", enable ? "Enabling" : "Disabling"));
         }
     }
 
@@ -65,8 +83,13 @@ public class KioskModeService extends Service {
         return PROCESS_ID_PRE_JELLY_BEAN;
     }
 
-    private void showToast(String message) {
-        toast = Toast.create(this, message);
+    private void showInfoToast(String message) {
+        toast = Toast.createInfo(this, message);
+        toast.show();
+    }
+
+    private void showErrorToast(String message) {
+        toast = Toast.createInfo(this, message);
         toast.show();
     }
 

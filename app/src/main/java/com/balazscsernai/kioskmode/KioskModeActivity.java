@@ -1,20 +1,18 @@
 package com.balazscsernai.kioskmode;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ToggleButton;
 
-import static com.balazscsernai.kioskmode.Constants.NAVIGATION_BAR_HIDDEN_DEF;
-import static com.balazscsernai.kioskmode.Constants.NAVIGATON_BAR_HIDDEN;
-import static com.balazscsernai.kioskmode.Constants.SHARED_PREFS;
+import com.balazscsernai.kioskmodehelper.KioskModeHelper;
+
+import static com.balazscsernai.kioskmode.KioskModeStore.STORE;
 
 public class KioskModeActivity extends Activity {
 
-    private ToggleButton hideNavigationBarTB;
+    private CheckBox kioskModeCB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +22,8 @@ public class KioskModeActivity extends Activity {
     }
 
     private void setupViews() {
-        hideNavigationBarTB = (ToggleButton) findViewById(R.id.hideNavigationBarActivity_toggle);
-        hideNavigationBarTB.setOnCheckedChangeListener(new HideNavigationBarCheckedListener());
+        kioskModeCB = (CheckBox) findViewById(R.id.hideNavigationBarActivity_checkBox);
+        kioskModeCB.setOnCheckedChangeListener(new HideNavigationBarCheckedListener());
     }
 
     @Override
@@ -35,26 +33,15 @@ public class KioskModeActivity extends Activity {
     }
 
     private void updateUI() {
-        hideNavigationBarTB.setChecked(loadPref());
+        kioskModeCB.setChecked(STORE.isKioskModeEnabled(this));
     }
 
     private void setNavigationBarHidden(boolean hidden) {
         if (hidden) {
-            KioskModeHelper.hideNavigationBar(this);
+            KioskModeHelper.enableKioskMode(this);
         } else {
-            KioskModeHelper.showNavigationBar(this);
+            KioskModeHelper.disableKioskMode(this);
         }
-        savePref(hidden);
-    }
-
-    private boolean loadPref() {
-        SharedPreferences sharedPrefs = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(NAVIGATON_BAR_HIDDEN, NAVIGATION_BAR_HIDDEN_DEF);
-    }
-
-    private void savePref(boolean hidden) {
-        SharedPreferences sharedPrefs = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        sharedPrefs.edit().putBoolean(NAVIGATON_BAR_HIDDEN, hidden).commit();
     }
 
     private class HideNavigationBarCheckedListener implements OnCheckedChangeListener {

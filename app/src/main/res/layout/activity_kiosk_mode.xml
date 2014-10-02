@@ -5,22 +5,18 @@
     android:padding="@dimen/distance_medium"
     tools:context="com.balazscsernai.kioskmode.KioskModeActivity" >
 
-    <ToggleButton
-        style="@android:style/Widget.Holo.Light.Button.Toggle"
-        android:id="@+id/hideNavigationBarActivity_toggle"
+    <CheckBox
+        android:id="@+id/hideNavigationBarActivity_checkBox"
         android:layout_width="@dimen/size_large_thumbnail"
         android:layout_height="@dimen/size_large_thumbnail"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textOn="on"
-        android:textOff="off"/>
+        android:layout_alignParentTop="true" />
 
     <TextView
-        style="@android:style/Widget.TextView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_large_thumbnail"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/hideNavigationBarActivity_toggle"
+        android:layout_toRightOf="@id/hideNavigationBarActivity_checkBox"
         android:layout_alignParentTop="true"
         android:gravity="center_vertical"
         android:text="@string/hideNavigationBarActivity_label_text" />

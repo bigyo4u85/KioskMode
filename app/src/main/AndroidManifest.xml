@@ -5,7 +5,7 @@
 
     <application android:allowBackup="true"
         android:label="@string/applicationName"
-        android:icon="@drawable/ic_kiosk"
+        android:icon="@drawable/ic_kiosk_tablet"
         android:theme="@style/ApplicationTheme">
 
         <activity
@@ -20,7 +20,7 @@
 
         <receiver android:name=".KioskModeReceiver" >
             <intent-filter>
-                <action android:name="com.balazscsernai.action.HIDE_NAVIGATION_BAR" />
+                <action android:name="com.balazscsernai.action.ENABLE_KIOSK_MODE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

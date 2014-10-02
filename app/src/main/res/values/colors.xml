@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark">#666666</color>
+    <color name="toast_bgcolor">#6bb7d6</color>
 </resources>

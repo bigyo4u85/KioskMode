@@ -1,5 +1,6 @@
 package com.balazscsernai.kioskmode.widget;
 
+import static com.balazscsernai.kioskmode.widget.ToastType.*;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
@@ -13,13 +14,15 @@ import android.view.WindowManager;
 public class Toast {
 
     private final Context context;
-    private final String message;
+    private final String toastMessage;
+    private final ToastType toastType;
     private WindowManager windowManager;
     private WidgetToast toast;
 
-    private Toast(Context context, String message) {
+    private Toast(Context context, String message, ToastType type) {
         this.context = context;
-        this.message = message;
+        this.toastMessage = message;
+        this.toastType = type;
     }
 
     /**
@@ -29,12 +32,17 @@ public class Toast {
         if (!isShown()) {
             windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             toast = new WidgetToast(context);
-            toast.setMessage(message);
+            toast.setType(toastType);
+            toast.setMessage(toastMessage);
             toast.setOnClickListener(new ToastClickListener(this));
             windowManager.addView(toast, getLayoutParams());
         }
     }
 
+    /**
+     * Checks if the toast is displayed.
+     * @return True if toast is displayed
+     */
     public final boolean isShown() {
         return windowManager != null && toast != null;
     }
@@ -59,13 +67,33 @@ public class Toast {
     }
 
     /**
-     * Creates a toast.
+     * Creates an info toast.
      * @param context Android context
-     * @param message Toast message
-     * @return Toast
+     * @param message Toast toastMessage
+     * @return Info toast
      */
-    public static final Toast create(Context context, String message) {
-        return new Toast(context, message);
+    public static final Toast createInfo(Context context, String message) {
+        return new Toast(context, message, INFO);
+    }
+
+    /**
+     * Creates a warning toast.
+     * @param context Android context
+     * @param message Toast toastMessage
+     * @return Warning toast
+     */
+    public static final Toast createWarning(Context context, String message) {
+        return new Toast(context, message, WARNING);
+    }
+
+    /**
+     * Creates an error toast.
+     * @param context Android context
+     * @param message Toast toastMessage
+     * @return Error toast
+     */
+    public static final Toast createError(Context context, String message) {
+        return new Toast(context, message, ERROR);
     }
 
 }

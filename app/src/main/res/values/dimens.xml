@@ -3,6 +3,7 @@
     <dimen name="distance_medium">8dp</dimen>
     <dimen name="distance_small">4dp</dimen>
     <dimen name="distance_micro">2dp</dimen>
+    <dimen name="distance_overflow_large">-14dp</dimen>
     <dimen name="size_xxlarge_thumbnail">64dp</dimen>
     <dimen name="size_xlarge_thumbnail">56dp</dimen>
     <dimen name="size_large_thumbnail">48dp</dimen>
