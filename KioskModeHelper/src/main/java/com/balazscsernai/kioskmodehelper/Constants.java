@@ -8,5 +8,6 @@ public class Constants {
 
     public static final String ACTION_ENABLE_KIOSK_MODE = "com.balazscsernai.action.ENABLE_KIOSK_MODE";
     public static final String EXTRA_ENABLE_KIOSK_MODE = "com.balazscsernai.extra.ENABLE_KIOSK_MODE";
+    public static final String EXTRA_SILENT_MODE_CHANGE = "com.balazscsernai.extra.SILENT_MODE_CHANGE";
 
 }

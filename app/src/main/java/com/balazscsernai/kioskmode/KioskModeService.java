@@ -9,13 +9,13 @@ import com.balazscsernai.kioskmode.widget.Toast;
 
 import java.io.IOException;
 
-import static com.balazscsernai.kioskmode.Constants.COMMAND_DISABLE_KIOSK_MODE;
+import static com.balazscsernai.kioskmode.Constants.*;
 import static com.balazscsernai.kioskmode.Constants.COMMAND_ENABLE_KIOSK_MODE;
 import static com.balazscsernai.kioskmode.Constants.KIOSK_MODE_ENABLED_DEFAULT;
 import static com.balazscsernai.kioskmode.Constants.PROCESS_ID_POST_JELLY_BEAN;
 import static com.balazscsernai.kioskmode.Constants.PROCESS_ID_PRE_JELLY_BEAN;
 import static com.balazscsernai.kioskmode.KioskModeStore.STORE;
-import static com.balazscsernai.kioskmodehelper.Constants.EXTRA_ENABLE_KIOSK_MODE;
+import static com.balazscsernai.kioskmodehelper.Constants.*;
 
 /**
  * Service for kiosk mode.
@@ -36,9 +36,9 @@ public class KioskModeService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (isValidIntent(intent)) {
-            boolean enable = getIntentExtra(intent);
+            boolean enable = getEnabledExtra(intent);
             if (isKioskModeChanged(enable)) {
-                enableKioskMode(enable);
+                enableKioskMode(enable, getSilentExtra(intent));
             }
         }
         return Service.START_NOT_STICKY;
@@ -48,7 +48,7 @@ public class KioskModeService extends Service {
         return intent != null && intent.hasExtra(EXTRA_ENABLE_KIOSK_MODE);
     }
 
-    private boolean getIntentExtra(Intent intent) {
+    private boolean getEnabledExtra(Intent intent) {
         return intent.getBooleanExtra(EXTRA_ENABLE_KIOSK_MODE, KIOSK_MODE_ENABLED_DEFAULT);
     }
 
@@ -56,7 +56,11 @@ public class KioskModeService extends Service {
         return enable != STORE.isKioskModeEnabled(this);
     }
 
-    private void enableKioskMode(boolean enable) {
+    private boolean getSilentExtra(Intent intent) {
+        return intent.getBooleanExtra(EXTRA_SILENT_MODE_CHANGE, SILENT_MODE_CHANGE_DEFAULT);
+    }
+
+    private void enableKioskMode(boolean enable, boolean silent) {
         Process process = null;
 
         hidePreviousToast();
@@ -68,11 +72,11 @@ public class KioskModeService extends Service {
             }
             process.waitFor();
             STORE.setKioskMode(this, enable);
-            showInfoToast(String.format("Kiosk mode %s", enable ? "enabled" : "disabled"));
+            showInfoToast(silent, String.format("Kiosk mode %s", enable ? "enabled" : "disabled"));
         } catch (IOException e) {
-            showErrorToast(String.format("Super user privileges needed to %s kiosk mode!", enable ? "enable" : "disable"));
+            showErrorToast(silent, String.format("Super user privileges needed to %s kiosk mode!", enable ? "enable" : "disable"));
         } catch (InterruptedException e) {
-            showErrorToast(String.format("%s kiosk mode failed!", enable ? "Enabling" : "Disabling"));
+            showErrorToast(silent, String.format("%s kiosk mode failed!", enable ? "Enabling" : "Disabling"));
         }
     }
 
@@ -83,14 +87,18 @@ public class KioskModeService extends Service {
         return PROCESS_ID_PRE_JELLY_BEAN;
     }
 
-    private void showInfoToast(String message) {
-        toast = Toast.createInfo(this, message);
-        toast.show();
+    private void showInfoToast(boolean silent, String message) {
+        if (!silent) {
+            toast = Toast.createInfo(this, message);
+            toast.show();
+        }
     }
 
-    private void showErrorToast(String message) {
-        toast = Toast.createInfo(this, message);
-        toast.show();
+    private void showErrorToast(boolean silent, String message) {
+        if (!silent) {
+            toast = Toast.createInfo(this, message);
+            toast.show();
+        }
     }
 
     private void hidePreviousToast() {

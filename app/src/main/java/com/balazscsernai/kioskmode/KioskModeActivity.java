@@ -38,9 +38,9 @@ public class KioskModeActivity extends Activity {
 
     private void setNavigationBarHidden(boolean hidden) {
         if (hidden) {
-            KioskModeHelper.enableKioskMode(this);
+            KioskModeHelper.enableKioskMode(this, true);
         } else {
-            KioskModeHelper.disableKioskMode(this);
+            KioskModeHelper.disableKioskMode(this, true);
         }
     }
 
